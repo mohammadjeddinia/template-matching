@@ -1,0 +1,32 @@
+#template matching
+import numpy as np
+import cv2
+
+#load image
+image=cv2.imread("tabriz.jpg")
+
+#load template image & convert to grayscale
+template=cv2.imread("b.jpg" , cv2.IMREAD_GRAYSCALE)
+
+# 50% reduction image & temlplate pixel size
+image=cv2.resize(image,(0,0), fx=0.5 ,fy=0.5)
+template=cv2.resize(template,(0,0), fx=0.5 ,fy=0.5)
+
+#convert image to grayscale
+gray_image=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+
+#extract size of template
+w,h=template.shape[: : -1]
+
+#use method cv2.TM_CCOEFF_NORMED for template matching
+result = cv2.matchTemplate(gray_image,template,cv2.TM_CCOEFF_NORMED)
+location=np.where(result>=0.7)
+
+#determine the rectangle size
+for point in zip(*location[: : -1]):
+    cv2.rectangle(image,point,(point[0]+w , point[1]+h),(205,0,0) , 1)
+
+#show the final image
+cv2.imshow("image",image)
+
+cv2.waitKey(0)
